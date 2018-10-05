@@ -53,6 +53,11 @@ spot_rate <- (c(r.1yr,r.2yr) + 1)^c(1,2)
 cf <- c(7, 107)
 bond_price = sum(cf /spot_rate)
 arbitrage = 103.370 - bond_price
+
+lhs <- matrix(c(5,100,105,0), nrow =2, ncol = 2,byrow = TRUE)
+rhs <- matrix(c(7,107))
+ans <- solve(lhs) %*% rhs
+statmt <- paste0("Buy ", ans[1,1]," units of bond b and ", ans[2,1], " units of bond a")
 # save down your final answers
-mysoln[["Q3"]] = list(a=arbitrage)
+mysoln[["Q3"]] = list(a=statmt)
 # Put the answer in your PDF writeup
