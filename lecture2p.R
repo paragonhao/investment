@@ -15,7 +15,7 @@ zero_coupon <- 100/ (1+0.06)^3
 zero_coupon_ytm <- IRR(zero_coupon,c(0,0,100),c(1,2,3))
 
 cf <-  100 * 0.06 
-bond_b <- cf * (1/ (1 + maturity[1])) + (cf+100) * (1/(1+maturity[2]))
+bond_b <- cf * (1/ (1 + maturity[1])) + (cf+100) * (1/(1+maturity[2])^2)
 bond_b_ytm <- IRR(bond_b,c(6,106),c(1,2))
 
 cf = 100 * 0.08 
@@ -37,7 +37,7 @@ p_x <- 100.98
 r.6month <- ((cf_x + 100)/p_x -1) * 2
 
 p_y <- 103.59
-r.1yr <- ((103/(103.59 - (3/(1+ 0.5 * r_0.5))))^0.5 - 1) * 2
+r.1yr <- ((103/(103.59 - (3/(1+ 0.5 * r.6month))))^0.5 - 1) * 2
 
 # save down your final answers
 a <- c(r.6month, r.1yr) #in decimal form
