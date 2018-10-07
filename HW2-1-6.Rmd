@@ -1,0 +1,117 @@
+---
+header-includes:
+- \usepackage{amssymb, amsmath, amsthm}
+- \usepackage{tabu}
+- \newcommand{\E}{\mathbb{E}}
+- \newcommand{\var}{{\rm Var}}
+- \newcommand{\N}{\mathcal{N}}
+output: pdf_document
+---
+
+\noindent \begin{tabu} to \textwidth {@{}X[4 l] @{}X[r]}
+  \textbf{HW 2}           & \\ 
+  \textbf{MFE 400: Investment}   & \\ 
+  \textbf{Professor Chernov}         & \\
+  \textbf{Group 6}          &\\
+  \textbf{Students: Xiahao Wang, Juan Manuel Ferreyra Maspero, Xinyue Zhu, Yichu Li, Mu Lin}
+\end{tabu}
+
+##Question 1
+
+(a)
+
+Since this is a zero coupon bond, we use the 3-year spot rate to discount back the par value to calculate the price today.
+
+$$\frac{100}{(1+r_3)^3}=\frac{100}{(1+0.06)^3}=\$83.96$$
+
+The bond price is $83.96.
+
+(b)
+
+This bond is paying $100\times0.06=6$ dollars coupon at year 1 and year 2. The bond is also paying back the par value at the end of year 2. Thus, the cash flow is 6 at the end of year 1 and 106 at the end of year 2.
+
+We use 1-year spot rate to disocunt back the 6 dollars at year 1 and use 2-year spot rate to discount back the 106 dolalrs at year 2.
+
+$$\frac{100\times0.06}{1+0.05}+\frac{100+100\times0.06}{(1+0.055)^2}=\$100.95$$
+  
+The bond price is $100.95.
+
+
+(c)
+
+The cash flow at year 1, year 2, year 3 and year 4 are 8, 8, 8 and 108, respectively. We use 1-year spot rate, 2-year spot rate, 3-year spot rate and 4-year spot rate to discount cash flow at year 1, year 2, year 3 and year 4, respectively.
+
+Coupon=$100\times{0.08}=\$8$
+
+Bond price=$$\frac{8}{1+0.05}+\frac{8}{(1+0.055)^2}+\frac{8}{(1+0.06)^3}+\frac{100+8}{(1+0.063)^4}=\$106.11$$
+
+The bond price is $106.11.
+
+##Question 2
+
+Bond X:
+
+$$\frac{100+100\times({0.04}/2)}{(1+r_{0.5}/2)}=\$100.98$$
+
+$$r_{0.5}=0.02020202$$
+
+The six month spot rate is 2.020202%.
+
+
+
+Bond Y:
+
+coupon=$100\times0.03=3$
+
+$$\frac{3}{1+(r_{0.5}/2)}+\frac{(100+3)}{1+(r_1/2)^2}=\$103.59$$
+
+$r_1=0.02351511$
+
+The 1-year spot rate is 2.351511%.
+
+##Question 3
+
+Since Bond A is a one year zero coupon bond, we get calculate the 1-year spot rate:
+
+$$r_1=\frac{100}{95.238}-1$$
+
+$$r_1=0.05000105$$
+
+
+We can also calculate the 2-year spot rate implied by information of bond B.
+
+Bond B coupon = $100\times{0.05}=5$
+
+$$\frac{5}{1+r_1}+\frac{100+5}{(1+r_2)^2}=98.438$$
+
+$$r_2=0.05871788$$
+
+
+We can use the 1-year spot rate and the 2-year calculated above to calculate the price for a bond with 7% Coupon rate.
+
+Coupon payment = $100\times{0.07}=7$
+
+Bond price = $$\frac{7}{1+0.05000105}+\frac{100+7}{(1+0.05871788)^2}=102.1271$$
+
+
+The price of bond C is listed as 103.370, which is higher than the price calculated based on te spot rates implied by bond A and bond B prices. Thus, bond C is over-priced.
+
+We can use x units of bond B and y unit of bond A to replicate bond C.
+
+$$
+\begin{aligned}
+5x+100y=7\\
+105x+0y=107\\
+\end{aligned}
+$$
+Thus,
+$$
+\begin{aligned}
+x=1.01904762\\
+y=0.01904762\\
+\end{aligned}
+$$
+Therefore, the trading strategy is buy 1.01904761904762 units of bond B and 0.019047619047619 units of bond A and sell 1 unit of bond C.
+
+
+

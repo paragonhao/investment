@@ -4,9 +4,9 @@
 # the first element of the list is a vector of names for the students in your group
 # make sure these match the names shown on the pdf document provided by the MFE office
 # using group 1 as an example:
-library(FinancialMath)
+if("FinancialMath" %in% rownames(installed.packages()) == FALSE) {install.packages("FinancialMath")}
 
-mysoln = list(student = c("Molin Liang", "Meghana Rao", "Chengbo Du", "Shardul Kulkarni"))
+mysoln <- list(student = c("Xiahao Wang", "Juan Manuel Ferreyra Maspero", "Xinyue Zhu", "Yichu Li","Mu Lin"))
 
 # 1
 maturity <- c(0.05, 0.055, 0.06, 0.063)
@@ -57,7 +57,8 @@ arbitrage = 103.370 - bond_price
 lhs <- matrix(c(5,100,105,0), nrow =2, ncol = 2,byrow = TRUE)
 rhs <- matrix(c(7,107))
 ans <- solve(lhs) %*% rhs
-statmt <- paste0("Buy ", ans[1,1]," units of bond b and ", ans[2,1], " units of bond a")
+statmt <- paste0("Short 1 unit of bond c, and Buy ", ans[1,1]," units of bond b and ", ans[2,1], " units of bond a")
 # save down your final answers
 mysoln[["Q3"]] = list(a=statmt)
 # Put the answer in your PDF writeup
+mysoln
