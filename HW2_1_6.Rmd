@@ -26,6 +26,12 @@ $$\frac{100}{(1+r_3)^3}=\frac{100}{(1+0.06)^3}=\$83.96$$
 
 The bond price is $83.96.
 
+$$\$83.96 = \frac{0}{(1+y)^2} + \frac{0}{(1+y)^2} + \frac{100}{(1 + y)^3}$$
+Solving this equation YTM = 6%
+
+
+
+
 (b)
 
 This bond is paying $100\times0.06=6$ dollars coupon at year 1 and year 2. The bond is also paying back the par value at the end of year 2. Thus, the cash flow is 6 at the end of year 1 and 106 at the end of year 2.
@@ -37,6 +43,9 @@ $$\frac{100\times0.06}{1+0.05}+\frac{100+100\times0.06}{(1+0.055)^2}=\$100.95$$
 The bond price is $100.95.
 
 
+$$\$100.95 = \frac{6}{1+y} + \frac{106}{(1+y)^2}$$
+Solving this equation YTM = 5.485568%
+
 (c)
 
 The cash flow at year 1, year 2, year 3 and year 4 are 8, 8, 8 and 108, respectively. We use 1-year spot rate, 2-year spot rate, 3-year spot rate and 4-year spot rate to discount cash flow at year 1, year 2, year 3 and year 4, respectively.
@@ -46,6 +55,10 @@ Coupon=$100\times{0.08}=\$8$
 Bond price=$$\frac{8}{1+0.05}+\frac{8}{(1+0.055)^2}+\frac{8}{(1+0.06)^3}+\frac{100+8}{(1+0.063)^4}=\$106.11$$
 
 The bond price is $106.11.
+
+$$\$106.11 = \frac{8}{1+y} + \frac{8}{(1+y)^2} + \frac{8}{(1+y)^3} + \frac{108}{(1+y)^4}$$
+
+Solving this equation YTM = 6.227511%
 
 ##Question 2
 
@@ -82,7 +95,7 @@ We can also calculate the 2-year spot rate implied by information of bond B.
 
 Bond B coupon = $100\times{0.05}=5$
 
-$$\frac{5}{1+r_1}+\frac{100+5}{(1+r_2)^2}=98.438$$
+$$\frac{5}{1+r_1}+\frac{100+5}{(1+r_2)^2}=\$98.44$$
 
 $$r_2=0.05871788$$
 
@@ -91,7 +104,7 @@ We can use the 1-year spot rate and the 2-year calculated above to calculate the
 
 Coupon payment = $100\times{0.07}=7$
 
-Bond price = $$\frac{7}{1+0.05000105}+\frac{100+7}{(1+0.05871788)^2}=102.1271$$
+Bond price = $$\frac{7}{1+0.05000105}+\frac{100+7}{(1+0.05871788)^2}=\$102.13$$
 
 
 The price of bond C is listed as 103.370, which is higher than the price calculated based on te spot rates implied by bond A and bond B prices. Thus, bond C is over-priced.

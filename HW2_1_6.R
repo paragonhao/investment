@@ -5,7 +5,7 @@
 # make sure these match the names shown on the pdf document provided by the MFE office
 # using group 1 as an example:
 if("FinancialMath" %in% rownames(installed.packages()) == FALSE) {install.packages("FinancialMath")}
-
+library(FinancialMath)
 mysoln <- list(student = c("Xiahao Wang", "Juan Manuel Ferreyra Maspero", "Xinyue Zhu", "Yichu Li","Mu Lin"))
 
 # 1
