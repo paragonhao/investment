@@ -19,11 +19,11 @@ ytm <- IRR(bond_price,cf,c(1,2,3))
 
 # 3 forward rates: year 1 to year 2 and year 1 to year 3 and year 2 to year 3
 one_f_one <- (1+r2)^2/(1+r1)  # year 1 to year 2
-two_f_one <- (1+r3)^3/(1+r2)^2 # year 2 to year 3
-one_f_two <-  (1+r3)^3/(1+r1)  # year 1 to year 3
+two_f_one <- (1+r3)^3/(1+r2) # year 2 to year 3
+one_f_two <-  ((1+r3)^3/(1+r1))^0.5  # year 1 to year 3
 forward_rates <- c(one_f_one,two_f_one,one_f_two) -1
 # save down your final answers for part a, b, and c
-return.3yr <- sum(cf  * c((one_f_two)^2 , two_f_one,1))
+return.3yr <- ytm
 
 a = c(bond_price, ytm)
 b = forward_rates #increase/decrease vector depending on how many forward rates you can calculate
@@ -36,7 +36,7 @@ mysoln[["Q1"]] = list(a=a, b=b, c=c)
 # 2
 # put a and c in pdf
 # part a: use the forward rate from year 1 to year 3
-b = (1+ 0.07)^3/(1+0.05) - 1
+b = ((1+ 0.07)^3/(1+0.06))^0.5 - 1
 mysoln[["Q2"]] = list(b=b)
 # part c:(1 + 2f1)^2 * 1mil = future value of the zero coupon
 # 3
@@ -77,14 +77,15 @@ compute_duration <- function(n, coupon_rate, ytm){
   bond_price = sum(pv)
   print(bond_price)
   weight <- pv / bond_price
-  maculy_duration <- sum(weight * time) / 2 # because semiannual
-  modified_duration <- maculy_duration /(1+ytm)
-  return(modified_duration)
+  maculy_duration <- sum(weight * time /2) # because semiannual
+  #modified_duration <- maculy_duration /(1+ytm)
+  return(maculy_duration)
 }
 
 e = c(compute_duration(5,0.01,ytm),compute_duration(10,0.01,ytm),compute_duration(5,0.04,ytm),compute_duration(10,0.04,ytm)) #(Bond A duration, Bond B duration, Bond C duration, Bond D duration)
-eu = -bond_price_list * e * (0.003) # price changes for 3.0->3.5 yld chg
-ed = -bond_price_list * e * (-0.003) # price changes for 3.0->2.5 yld chg
+modified_duration <- e /(1+ytm/2)
+eu = -bond_price_list * modified_duration * (0.003) # price changes for 3.0->3.5 yld chg
+ed = -bond_price_list * modified_duration * (-0.003) # price changes for 3.0->2.5 yld chg
 #f = "Put in PDF Write up" 
 
 # add answers to list for "Q2"
@@ -99,7 +100,7 @@ mysoln[["Q3"]] = list(#a=a, put in PDF writeup only
   ed = ed)
 #f = f put in PDF writeup only
 # part f: 
-# -higher coupon, higher sensitivity to change in price
+#  -higher coupon, higher sensitivity to change in price
 # - higher the maturity, lower the price 
 
 
@@ -127,6 +128,7 @@ compute_hedging_portfolio <- function(n,r){
   pv <- 100*(1+flat_rate)^-n
   duration <- n
   modified_duration <- n/(1+r)
+  print(DV01)
   DV01 <- pv * modified_duration/10000
   x <- DV01L/DV01
   bond_pos <- x/(1+r)^n
