@@ -149,7 +149,7 @@ mysoln[["Q3"]] = list(#a=a, put in PDF writeup only
 
 # your intermediary code to get your answers here
 # Basics about the liability
-r <- 0.048
+r <- 0.06
 liability <- 1000000/(1+r)^30 + 2000000/(1+r)^31
 duration_liab <- (1000000/(1+r)^30/liability)*30 + (2000000/(1+r)^31/liability)*31
 MD_liab <- duration_liab/(1+r)
