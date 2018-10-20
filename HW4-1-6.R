@@ -111,7 +111,7 @@ q10yr <- c(as.numeric(unit10yrStartLong),rep(0,n-1))
 value2yrShort <-c(as.double(value2yrStart), rep(0, n-1))
 value10yrLong <- c(as.double(value10yrStart), rep(0, n-1))
 
-CashPos_7d<- c(as.double(cashPosStart),rep(0,n-1))
+CashPosition<- c(as.double(cashPosStart),rep(0,n-1))
 # total capital for each week, in millions
 totalCap <- c(starting_capital, rep(0,n-1))
 
@@ -132,11 +132,11 @@ for( i in  1:(n-1)){
   one_week_yield <- NSS_model(key = i, t = 1/52)
   
   # TODO: interest calculation, we should change it to 
-  interest_pnl[i+1] <- CashPos_7d[i] * (exp( one_week_yield * (1/52) / 100) - 1 )
+  interest_pnl[i+1] <- CashPosition[i] * (exp( one_week_yield * (1/52) / 100) - 1 )
   cummulative_i[i+1] <- cummulative_i[i] + interest_pnl[i+1]
   
   # close the trade from last week
-  totalCap[i+1] <- q10yr[i] * lt10yrPrc[i+1] - q2yr[i]*lt2yrPrc[i+1] + CashPos_7d[i] + interest_pnl[i+1]
+  totalCap[i+1] <- q10yr[i] * lt10yrPrc[i+1] - q2yr[i]*lt2yrPrc[i+1] + CashPosition[i] + interest_pnl[i+1]
   
   cur_pos <- compute_short_long_quantity(totalCap[i+1], leverage, weekly_data,key = i+1)
   q2yr[i+1] <- cur_pos[1]
@@ -146,7 +146,7 @@ for( i in  1:(n-1)){
   value10yrLong[i+1] <- q10yr[i+1] * weekly_data$bond_price_10yr[i+1] 
   
   # update the size of the cash position
-  CashPos_7d[i+1] <- cashPos(value2yrShort[i+1], value10yrLong[i+1], totalCap[i+1])
+  CashPosition[i+1] <- cashPos(value2yrShort[i+1], value10yrLong[i+1], totalCap[i+1])
 }
 
 cummulative_r <- totalCap - starting_capital
@@ -161,5 +161,5 @@ head(q10yr)
 head(value2yrShort)
 head(value10yrLong)
 head(totalCap)
-head(CashPos_7d)
+head(CashPosition)
 
