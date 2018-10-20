@@ -4,8 +4,8 @@ library(xts)
 ###global variables #####
 Duration_2yr <- 2
 Duration_10yr <-10
-t2yrMinus7 <- 1 + 51/52
-t10yrMinus7 <- 9 + 51/52
+t2yrMinus7 <- 1 + 358/365
+t10yrMinus7 <- 9 + 358/365
 
 ###common functions #####
 cashPos <- function(value2yrStart, value10yrStart, capitalRequired){
@@ -110,14 +110,14 @@ q2yr <- c(as.numeric(unit2yrStartShort),rep(0,n-1))
 q10yr <- c(as.numeric(unit10yrStartLong),rep(0,n-1))
 value2yrShort <-c(as.double(value2yrStart), rep(0, n-1))
 value10yrLong <- c(as.double(value10yrStart), rep(0, n-1))
-
 CashPosition<- c(as.double(cashPosStart),rep(0,n-1))
 # total capital for each week, in millions
 totalCap <- c(starting_capital, rep(0,n-1))
-
+one_week_yield <- c(rep(0, n))
 # consider interest from holding capitals
 interest_pnl <- rep(0, n)
 cummulative_i <- rep(0, n)
+spread_return <- rep(0, n)
 
 for( i in  1:(n-1)){
   # calculate the yield and price for 2 year minus 1 week
@@ -129,10 +129,10 @@ for( i in  1:(n-1)){
   lt10yrPrc[i+1] <- 100 / exp(lt10yrYield / 100 * t10yrMinus7)
   
   # calculate one week yield，use NSS model to calculate the yield 
-  one_week_yield <- NSS_model(key = i, t = 1/52)
+  one_week_yield[i] <- NSS_model(key = i, t = 7/365)
   
-  # TODO: interest calculation, we should change it to 
-  interest_pnl[i+1] <- CashPosition[i] * (exp( one_week_yield * (1/52) / 100) - 1 )
+  #interest calculation, we should change it to 
+  interest_pnl[i+1] <- CashPosition[i] * (exp( one_week_yield[i] * (7/365) / 100) - 1 )
   cummulative_i[i+1] <- cummulative_i[i] + interest_pnl[i+1]
   
   # close the trade from last week
@@ -147,13 +147,29 @@ for( i in  1:(n-1)){
   
   # update the size of the cash position
   CashPosition[i+1] <- cashPos(value2yrShort[i+1], value10yrLong[i+1], totalCap[i+1])
+  
+  # Change in delta r_1
+  #changeDeltaY10yr  <-  (as.double(weekly_data$SVENY10[i+1]) - as.double(weekly_data$SVENY10[i]))
+  #changeDeltaY2yr  <-  (as.double(weekly_data$SVENY02[i+1]) - as.double(weekly_data$SVENY02[i]))
+  
+  #spread_return[i+1] <- - as.double(weekly_data$DV01_10yr[i+1]) *as.double(changeDeltaY10yr) +  as.double(weekly_data$DV01_2yr[i+1]) * as.double(changeDeltaY2yr) +   as.double(spread_return[i]) 
+  
 }
 
+# Q1 plot cumulative return 
 cummulative_r <- totalCap - starting_capital
 result <- as.xts(cummulative_r, order.by=index(weekly_data))
+plot(result, main = "Cumulative Return")
 
-rownames(result) <- c("Total Capital")
-plot(result)
+# Q2 
+bp10 <- 0.001
+soc_price <- 10 * 11 /(1 + weekly_data$SVENY10/100)^2
+convexity_risk <- 0.5 * weekly_data$bond_price_10yr * soc_price *  (bp10)^2
+plot(convexity_risk, main = "Convexity Risk")
+
+# Q3 
+# spread return
+plot(spread_return)
 
 head(weekly_data)
 head(q2yr)
