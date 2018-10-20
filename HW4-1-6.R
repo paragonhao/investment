@@ -6,11 +6,8 @@ Duration_2yr <- 2
 Duration_10yr <-10
 t2yrMinus7 <- 1 + 51/52
 t10yrMinus7 <- 9 + 51/52
-###common functions #####
-DV01<-function(price, modDuration){
-  return(price * modDuration / 10000)
-}
 
+###common functions #####
 cashPos <- function(value2yrStart, value10yrStart, capitalRequired){
   return(value2yrStart - value10yrStart + capitalRequired)
 }
