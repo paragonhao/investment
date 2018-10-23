@@ -163,7 +163,7 @@ plot(result, main = "Cumulative Return")
 # Q2 
 bp10 <- 0.001
 soc_price <- 10 * 11 /(1 + weekly_data$SVENY10/100)^2
-convexity_risk <- 0.5 * weekly_data$bond_price_10yr * soc_price *  (bp10)^2
+convexity_risk <- 0.5 * weekly_data$bond_price_10yr * soc_price *  (bp10)^2 * starting_capital
 plot.xts(convexity_risk, main = "Convexity Risk",major.ticks="years" )
 
 # Q3 
