@@ -139,8 +139,12 @@ for( i in  1:(n-1)){
   interest_pnl[i+1] <- CashPosition[i] * one_week_yield_compound
   cummulative_i[i+1] <- cummulative_i[i] + interest_pnl[i+1]
   
+  #time return 
+  changeDeltaRollDownY10yr  <-  (as.double(weekly_data$SVENY10[i]) - NSS_model(key = i, t = t10yrMinus7))
+  changeDeltaRollDownY2yr  <-  (as.double(weekly_data$SVENY02[i])- NSS_model(key = i, t = t2yrMinus7))
+  #time_return[i+1]  <- q10yr[i] * weekly_data$DV01_10yr[i] *100* changeDeltaRollDownY10yr - q2yr[i] * weekly_data$DV01_2yr[i] * changeDeltaRollDownY2yr*100
+  
   # close the trade from last week
-  #time_return[i+1] <- (q10yr[i] * weekly_data$bond_price_10yr[i]  - q2yr[i] * weekly_data$bond_price_2yr[i]) * one_week_yield_compound + interest_pnl[i+1]
   totalCap[i+1] <- q10yr[i] * lt10yrPrc[i+1] - q2yr[i]*lt2yrPrc[i+1] + CashPosition[i] + interest_pnl[i+1]
   
   cur_pos <- compute_short_long_quantity(totalCap[i+1], leverage, weekly_data,key = i+1)
@@ -158,7 +162,6 @@ for( i in  1:(n-1)){
   changeDeltaY2yr  <-  (as.double(weekly_data$SVENY02[i+1])- as.double(weekly_data$SVENY02[i]))
   deltaY10r[i+1] <- changeDeltaY10yr
   deltaY2r[i+1] <- changeDeltaY2yr
-  
   spread_return[i+1]  <- -q10yr[i] * weekly_data$DV01_10yr[i] *100* changeDeltaY10yr + q2yr[i] * weekly_data$DV01_2yr[i] * changeDeltaY2yr*100
 }
 
@@ -192,6 +195,7 @@ summary <- cbind(cummulative_return, spread_return_cum, convex_return_cum,intere
 colnames(summary) <- c("Cum Return", "Spread Return", "Convexity Return", "Interest Return", "Residual Return")
 summary_table <- as.xts(summary, order.by=index(weekly_data))
 plot.xts(summary_table, main = "Cumulative Return Breakdown", col=c("red", "blue", "black", "green","yellow"), legend.loc = "bottomleft", yaxis.right=TRUE)
+
 ############################################ Back Testing For Two Percent##########################################
 # duplicate code as the strategy above, too lazy to optimize the code efficiency because its saturday  0_o 
 # Be mindful if the data is overidden by as it shares some variables with the first strategy
