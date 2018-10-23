@@ -118,6 +118,9 @@ one_week_yield <- c(rep(0, n))
 interest_pnl <- rep(0, n)
 cummulative_i <- rep(0, n)
 spread_return <- rep(0, n)
+deltaY10r <- rep(0, n)
+deltaY2r <- rep(0, n)
+time_return <- rep(0, n)
 
 for( i in  1:(n-1)){
   # calculate the yield and price for 2 year minus 1 week
@@ -137,6 +140,7 @@ for( i in  1:(n-1)){
   cummulative_i[i+1] <- cummulative_i[i] + interest_pnl[i+1]
   
   # close the trade from last week
+  #time_return[i+1] <- (q10yr[i] * weekly_data$bond_price_10yr[i]  - q2yr[i] * weekly_data$bond_price_2yr[i]) * one_week_yield_compound + interest_pnl[i+1]
   totalCap[i+1] <- q10yr[i] * lt10yrPrc[i+1] - q2yr[i]*lt2yrPrc[i+1] + CashPosition[i] + interest_pnl[i+1]
   
   cur_pos <- compute_short_long_quantity(totalCap[i+1], leverage, weekly_data,key = i+1)
@@ -152,6 +156,9 @@ for( i in  1:(n-1)){
   # Change in delta r_1
   changeDeltaY10yr  <-  (as.double(weekly_data$SVENY10[i+1]) - as.double(weekly_data$SVENY10[i]))
   changeDeltaY2yr  <-  (as.double(weekly_data$SVENY02[i+1])- as.double(weekly_data$SVENY02[i]))
+  deltaY10r[i+1] <- changeDeltaY10yr
+  deltaY2r[i+1] <- changeDeltaY2yr
+  
   spread_return[i+1]  <- -q10yr[i] * weekly_data$DV01_10yr[i] *100* changeDeltaY10yr + q2yr[i] * weekly_data$DV01_2yr[i] * changeDeltaY2yr*100
 }
 
@@ -161,20 +168,26 @@ result <- as.xts(cummulative_return, order.by=index(weekly_data))
 plot(result, main = "Cumulative Return")
 
 # Q2 
-bp10 <- 0.001
-soc_price <- 10 * 11 /(1 + weekly_data$SVENY10/100)^2
-convexity_risk <- 0.5 * weekly_data$bond_price_10yr * soc_price *  (bp10)^2 * starting_capital
+bp10 <- 0.01
+convexity_risk <- q10yr[i]* 0.5 * weekly_data$bond_price_10yr * Duration_10yr^2 *  (bp10/100)^2 * starting_capital
 plot.xts(convexity_risk, main = "Convexity Risk",major.ticks="years" )
 
 # Q3 
 # spread return
 spread_return_cum <- cumsum(spread_return)
 # Convexity return
-convex_return <- -q10yr * convexity_risk + q2yr * convexity_risk
+convex_return_10yr <- 0.5 * weekly_data$bond_price_10yr * Duration_10yr^2 *  (deltaY10r/100)^2
+convex_return_2yr <- 0.5 * weekly_data$bond_price_2yr * Duration_2yr^2 *  (deltaY2r/100)^2
+convex_return <- q10yr[i] * convex_return_10yr - q2yr[i] * convex_return_2yr
 convex_return_cum <- as.numeric(cumsum(convex_return))
+
+# Time return passage of time 
+time_return_cum <- cumsum(time_return)
+
 #residual return
 residual <- cummulative_return - spread_return_cum - convex_return_cum - interest_pnl
 #plot the graph
+
 summary <- cbind(cummulative_return, spread_return_cum, convex_return_cum,interest_pnl, residual)
 colnames(summary) <- c("Cum Return", "Spread Return", "Convexity Return", "Interest Return", "Residual Return")
 summary_table <- as.xts(summary, order.by=index(weekly_data))
@@ -226,6 +239,7 @@ one_week_yield <- c(rep(0, n))
 interest_pnl <- rep(0, n)
 cummulative_i <- rep(0, n)
 spread_return <- rep(0, n)
+time_return <- rep(0,n)
 
 for( i in  1:(n-1)){
   # calculate the yield and price for 2 year minus 1 week
