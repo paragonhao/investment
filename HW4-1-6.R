@@ -29,7 +29,6 @@ compute_short_long_quantity <- function (total_capital, leverage, weekly_data, k
 
 #########################################################################################################
 # Import data and extract data into to selected range from 1983-12-30 to 2018-06-30
-# TODO: Figure out a better way to import data without needing to change
 filepath <- "~/Documents/ucla/Quarter1/Investments/HW/feds200628.csv"
 fed_data_raw <- read.csv(filepath, header = TRUE, sep=",")
 fed_data_raw <- fed_data_raw[c("X","SVENY02", "SVENY10","BETA0","BETA1","BETA2","BETA3","TAU1","TAU2")]
@@ -176,7 +175,7 @@ plot(result, main = "Cumulative Return")
 
 # Q2 
 bp10 <- 0.01
-convexity_risk <- q10yr[i]* 0.5 * weekly_data$bond_price_10yr * Duration_10yr^2 *  (bp10/100)^2 * starting_capital
+convexity_risk <- q10yr[i]* 0.5 * weekly_data$bond_price_10yr * Duration_10yr^2 *  (bp10/100)^2
 plot.xts(convexity_risk, main = "Convexity Risk",major.ticks="years" )
 
 # Q3 
