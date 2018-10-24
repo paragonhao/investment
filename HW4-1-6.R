@@ -4,8 +4,8 @@ library(xts)
 ###global variables #####
 Duration_2yr <- 2
 Duration_10yr <-10
-t2yrMinus7 <- 1 + 358/365
-t10yrMinus7 <- 9 + 358/365
+t2yrMinus7 <- 1 + 51/52
+t10yrMinus7 <- 9 + 51/52
 
 ###common functions #####
 cashPos <- function(value2yrStart, value10yrStart, capitalRequired){
@@ -140,9 +140,15 @@ for( i in  1:(n-1)){
   cummulative_i[i+1] <- cummulative_i[i] + interest_pnl[i+1]
   
   #time return 
-  changeDeltaRollDownY10yr  <-  (as.double(weekly_data$SVENY10[i]) - NSS_model(key = i, t = t10yrMinus7))
-  changeDeltaRollDownY2yr  <-  (as.double(weekly_data$SVENY02[i])- NSS_model(key = i, t = t2yrMinus7))
-  #time_return[i+1]  <- q10yr[i] * weekly_data$DV01_10yr[i] *100* changeDeltaRollDownY10yr - q2yr[i] * weekly_data$DV01_2yr[i] * changeDeltaRollDownY2yr*100
+  y_10yr <- exp((weekly_data$SVENY10[i] / 100) * Duration_10yr)
+  y_2yr <- exp((weekly_data$SVENY02[i] / 100) * Duration_2yr)
+  
+  y_10yr_modifed <- exp((NSS_model(key = i, t = t10yrMinus7) / 100) * t10yrMinus7)
+  y_2yr_modified <- exp((NSS_model(key = i, t = t2yrMinus7) / 100) * t2yrMinus7)
+  
+  time_passage_10yr <- ((100/y_10yr_modifed) - weekly_data$bond_price_10yr[i]) * q10yr[i]
+  time_passage_2yr <- ((100/y_2yr_modified) - weekly_data$bond_price_2yr[i]) * -q2yr[i]
+  time_return[i+1] <- time_passage_10yr + time_passage_2yr
   
   # close the trade from last week
   totalCap[i+1] <- q10yr[i] * lt10yrPrc[i+1] - q2yr[i]*lt2yrPrc[i+1] + CashPosition[i] + interest_pnl[i+1]
@@ -160,8 +166,6 @@ for( i in  1:(n-1)){
   # Change in delta r_1
   changeDeltaY10yr  <-  (as.double(weekly_data$SVENY10[i+1]) - as.double(weekly_data$SVENY10[i]))
   changeDeltaY2yr  <-  (as.double(weekly_data$SVENY02[i+1])- as.double(weekly_data$SVENY02[i]))
-  deltaY10r[i+1] <- changeDeltaY10yr
-  deltaY2r[i+1] <- changeDeltaY2yr
   spread_return[i+1]  <- -q10yr[i] * weekly_data$DV01_10yr[i] *100* changeDeltaY10yr + q2yr[i] * weekly_data$DV01_2yr[i] * changeDeltaY2yr*100
 }
 
@@ -179,19 +183,21 @@ plot.xts(convexity_risk, main = "Convexity Risk",major.ticks="years" )
 # spread return
 spread_return_cum <- cumsum(spread_return)
 # Convexity return
-convex_return_10yr <- 0.5 * weekly_data$bond_price_10yr * Duration_10yr^2 *  (deltaY10r/100)^2
-convex_return_2yr <- 0.5 * weekly_data$bond_price_2yr * Duration_2yr^2 *  (deltaY2r/100)^2
-convex_return <- q10yr[i] * convex_return_10yr - q2yr[i] * convex_return_2yr
+deltaY10r <- c(0, diff(as.double(weekly_data$SVENY10), differences=1))
+deltaY2r <- c(0, diff(as.double(weekly_data$SVENY02), differences=1))
+convex_return_10yr <- 0.5 * weekly_data$bond_price_10yr * 100 *  (deltaY10r/100)^2
+convex_return_2yr <- 0.5 * weekly_data$bond_price_2yr * 4 *  (deltaY2r/100)^2
+convex_return <- q10yr * convex_return_10yr - q2yr * convex_return_2yr
 convex_return_cum <- as.numeric(cumsum(convex_return))
 
 # Time return passage of time 
-time_return_cum <- cumsum(time_return)
+time_return_cum <- cumsum(time_return + interest_pnl)
 
 #residual return
-residual <- cummulative_return - spread_return_cum - convex_return_cum - interest_pnl
+residual <- cummulative_return - spread_return_cum - convex_return_cum - time_return_cum
 #plot the graph
 
-summary <- cbind(cummulative_return, spread_return_cum, convex_return_cum,interest_pnl, residual)
+summary <- cbind(cummulative_return, spread_return_cum, convex_return_cum,time_return_cum, residual)
 colnames(summary) <- c("Cum Return", "Spread Return", "Convexity Return", "Interest Return", "Residual Return")
 summary_table <- as.xts(summary, order.by=index(weekly_data))
 plot.xts(summary_table, main = "Cumulative Return Breakdown", col=c("red", "blue", "black", "green","yellow"), legend.loc = "bottomleft", yaxis.right=TRUE)
