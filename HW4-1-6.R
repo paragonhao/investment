@@ -198,7 +198,7 @@ residual <- cummulative_return - spread_return_cum - convex_return_cum - time_re
 #plot the graph
 
 summary <- cbind(cummulative_return, spread_return_cum, convex_return_cum,time_return_cum, residual)
-colnames(summary) <- c("Cum Return", "Spread Return", "Convexity Return", "Interest Return", "Residual Return")
+colnames(summary) <- c("Cum Return", "Spread Return", "Convexity Return", "Time Return", "Residual Return")
 summary_table <- as.xts(summary, order.by=index(weekly_data))
 plot.xts(summary_table, main = "Cumulative Return Breakdown", col=c("red", "blue", "black", "green","yellow"), legend.loc = "bottomleft", yaxis.right=TRUE)
 
