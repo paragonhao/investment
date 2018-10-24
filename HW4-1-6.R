@@ -4,8 +4,8 @@ library(xts)
 ###global variables #####
 Duration_2yr <- 2
 Duration_10yr <-10
-t2yrMinus7 <- 1 + 51/52
-t10yrMinus7 <- 9 + 51/52
+t2yrMinus7 <- 1 + 358/365
+t10yrMinus7 <- 9 + 358/365
 
 ###common functions #####
 cashPos <- function(value2yrStart, value10yrStart, capitalRequired){
@@ -105,6 +105,7 @@ lt10yrPrc <- c(as.double(weekly_data$bond_price_10yr[1]),rep(0,n-1))
 
 cashPosStart <- cashPos(value2yrStart,value10yrStart, starting_capital)
 
+######################### Initializing vectors ######################################################
 q2yr <- c(as.numeric(unit2yrStartShort),rep(0,n-1))
 q10yr <- c(as.numeric(unit10yrStartLong),rep(0,n-1))
 value2yrShort <-c(as.double(value2yrStart), rep(0, n-1))
@@ -120,6 +121,8 @@ spread_return <- rep(0, n)
 deltaY10r <- rep(0, n)
 deltaY2r <- rep(0, n)
 time_return <- rep(0, n)
+
+########################## Running iterations #######################################################
 
 for( i in  1:(n-1)){
   # calculate the yield and price for 2 year minus 1 week
@@ -168,14 +171,15 @@ for( i in  1:(n-1)){
   spread_return[i+1]  <- -q10yr[i] * weekly_data$DV01_10yr[i] *100* changeDeltaY10yr + q2yr[i] * weekly_data$DV01_2yr[i] * changeDeltaY2yr*100
 }
 
+
 # Q1 plot cumulative return 
 cummulative_return <- totalCap - starting_capital
 result <- as.xts(cummulative_return, order.by=index(weekly_data))
 plot(result, main = "Cumulative Return")
 
 # Q2 
-bp10 <- 0.01
-convexity_risk <- q10yr[i]* 0.5 * weekly_data$bond_price_10yr * Duration_10yr^2 *  (bp10/100)^2
+bp10 <- 0.1
+convexity_risk <- 0.5 * weekly_data$bond_price_10yr * Duration_10yr^2 *  (bp10/100)^2 * 1000000
 plot.xts(convexity_risk, main = "Convexity Risk",major.ticks="years" )
 
 # Q3 
@@ -188,13 +192,10 @@ convex_return_10yr <- 0.5 * weekly_data$bond_price_10yr * 100 *  (deltaY10r/100)
 convex_return_2yr <- 0.5 * weekly_data$bond_price_2yr * 4 *  (deltaY2r/100)^2
 convex_return <- q10yr * convex_return_10yr - q2yr * convex_return_2yr
 convex_return_cum <- as.numeric(cumsum(convex_return))
-
 # Time return passage of time 
 time_return_cum <- cumsum(time_return + interest_pnl)
-
 #residual return
 residual <- cummulative_return - spread_return_cum - convex_return_cum - time_return_cum
-
 #plot the graph
 summary <- cbind(cummulative_return, spread_return_cum, convex_return_cum,time_return_cum, residual)
 colnames(summary) <- c("Cum Return", "Spread Return", "Convexity Return", "Time Return", "Residual Return")
