@@ -195,8 +195,8 @@ time_return_cum <- cumsum(time_return + interest_pnl)
 
 #residual return
 residual <- cummulative_return - spread_return_cum - convex_return_cum - time_return_cum
-#plot the graph
 
+#plot the graph
 summary <- cbind(cummulative_return, spread_return_cum, convex_return_cum,time_return_cum, residual)
 colnames(summary) <- c("Cum Return", "Spread Return", "Convexity Return", "Time Return", "Residual Return")
 summary_table <- as.xts(summary, order.by=index(weekly_data))
