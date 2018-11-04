@@ -29,8 +29,8 @@ compute_short_long_quantity <- function (total_capital, leverage, weekly_data, k
 
 #########################################################################################################
 # Import data and extract data into to selected range from 1983-12-30 to 2018-06-30
-filepath <- "~/Documents/ucla/Quarter1/Investments/HW/feds200628.csv"
-fed_data_raw <- read.csv(filepath, header = TRUE, sep=",")
+filepath <- "feds200628.csv"
+fed_data_raw <- read.csv(filepath, header = TRUE, sep=",",skip=9)
 fed_data_raw <- fed_data_raw[c("X","SVENY02", "SVENY10","BETA0","BETA1","BETA2","BETA3","TAU1","TAU2")]
 row.names(fed_data_raw) <- fed_data_raw$X
 fed_dat <- as.xts(fed_data_raw)
