@@ -59,6 +59,7 @@ daily_geo_ret_2016 <- geomean(sp500_5yrRet)
 total_ret <- (daily_geo_ret_2016 + 1)^ length(sp500_5yrRet)
 return_geo_mean_5yr <- total_ret ^ (1/length(yearly_5_data)) - 1
 annualized_5yearly_return_geo_mean <-(return_geo_mean_5yr +1)^(1/5) -1
+
 print("################### Arithmetic Mean Solutions ###################")
 avgmeansoln <- matrix(c(annualized_daily_return_avg,annualized_monthly_return_avg,
                         annualized_yearly_return_avg,annualized_yearly_5_return_avg),nrow = 1, ncol = 4)
