@@ -7,11 +7,12 @@ row.names(sp500) <- sp500$caldt
 sp500xts <- as.xts(sp500)
 sp500xts <- sp500xts[,-1]
 storage.mode(sp500xts) <- "double"
+tdays <- 252
 
 ########################### Find out arithmetic average returns ###########################
 # sp500xts is the daily return data
 #arithmetic daily returns
-annualized_daily_return_avg <- sum(sp500xts)/length(sp500xts) * 260
+annualized_daily_return_avg <- sum(sp500xts)/length(sp500xts) * tdays
 
 #arithmetic monthly return
 #find the position of the months
@@ -42,16 +43,17 @@ geomean <- function (return_data) {
   numeric_data <- as.numeric(return_data) + 1
   return(prod(numeric_data)^(1/length(numeric_data)) -1)
 }
-annualized_daily_return_geo_mean <- geomean(sp500xts) * 260
+annualized_daily_return_geo_mean <- (geomean(sp500xts) + 1)^tdays - 1
 
 # Geometric mean of monthly return
-annualized_monthly_return_geo_mean <- geomean(monthly_data) * 12
+annualized_monthly_return_geo_mean <- (geomean(monthly_data) + 1)^ 12 -1
 
 # Geometric mean of yearly return
 annualized_yearly_return_geo_mean <- geomean(yearly_data)
 
 # Geometric mean of 5 year return
-annualized_5yr_return_geo_mean <- geomean(yearly_5_data) /5
+annualized_5yr_return_geo_mean <- (geomean(yearly_5_data) + 1)^(1/5) - 1 
+
 print("################### Arithmetic Mean Solutions ###################")
 avgmeansoln <- matrix(c(annualized_daily_return_avg,annualized_monthly_return_avg,
                         annualized_yearly_return_avg,annualized_yearly_5_return_avg),nrow = 1, ncol = 4)
