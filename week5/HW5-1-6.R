@@ -43,17 +43,22 @@ geomean <- function (return_data) {
   numeric_data <- as.numeric(return_data) + 1
   return(prod(numeric_data)^(1/length(numeric_data)) -1)
 }
-annualized_daily_return_geo_mean <- (geomean(sp500xts) + 1)^tdays - 1
+daily_geo_ret <- geomean(sp500xts)
+annualized_daily_return_geo_mean <- (daily_geo_ret + 1)^tdays - 1
 
 # Geometric mean of monthly return
-annualized_monthly_return_geo_mean <- (geomean(monthly_data) + 1)^ 12 -1
+total_ret <- (daily_geo_ret + 1)^ length(sp500xts)
+monthly_return_geo_mean <- total_ret^(1/length(monthly_data)) - 1
+annualized_monthly_return_geo_mean <- (monthly_return_geo_mean + 1) ^ 12 - 1
 
 # Geometric mean of yearly return
-annualized_yearly_return_geo_mean <- geomean(yearly_data)
+annualized_yearly_return_geo_mean <- total_ret^(1/length(yearly_data)) - 1
 
 # Geometric mean of 5 year return
-annualized_5yr_return_geo_mean <- (geomean(yearly_5_data) + 1)^(1/5) - 1 
-
+daily_geo_ret_2016 <- geomean(sp500_5yrRet)
+total_ret <- (daily_geo_ret_2016 + 1)^ length(sp500_5yrRet)
+return_geo_mean_5yr <- total_ret ^ (1/length(yearly_5_data)) - 1
+annualized_5yearly_return_geo_mean <-(return_geo_mean_5yr +1)^(1/5) -1
 print("################### Arithmetic Mean Solutions ###################")
 avgmeansoln <- matrix(c(annualized_daily_return_avg,annualized_monthly_return_avg,
                         annualized_yearly_return_avg,annualized_yearly_5_return_avg),nrow = 1, ncol = 4)
@@ -62,6 +67,6 @@ avgmeansoln
 
 print("################### Geometric Mean Solutions ###################")
 geomeansoln <- matrix(c(annualized_daily_return_geo_mean,annualized_monthly_return_geo_mean,
-         annualized_yearly_return_geo_mean,annualized_5yr_return_geo_mean), nrow = 1, ncol = 4)
+         annualized_yearly_return_geo_mean,annualized_5yearly_return_geo_mean), nrow = 1, ncol = 4)
 colnames(geomeansoln) <- c("Daily", "Monthly", "Yearly", "5 Years")
 geomeansoln
